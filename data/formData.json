@@ -1,0 +1,8 @@
+{
+  "sampleInputText": "Automacao Carrefour Mobile 2026",
+  "dropdownOption": "webdriver.io is awesome",
+  "activeModal": {
+    "expectedTitle": "This button is",
+    "expectedMessage": "This button is active"
+  }
+}

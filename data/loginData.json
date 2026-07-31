@@ -1,0 +1,26 @@
+{
+  "validUser": {
+    "email": "carrefour.qa@test.com",
+    "password": "Password123!",
+    "expectedSuccessTitle": "Success",
+    "expectedSuccessMessage": "You are logged in!"
+  },
+  "invalidEmailUser": {
+    "email": "invalid-email-format",
+    "password": "Password123!",
+    "expectedErrorMessage": "Please enter a valid email address"
+  },
+  "validSignUpUser": {
+    "email": "novo.usuario@carrefour.com",
+    "password": "SecurePassword123!",
+    "confirmPassword": "SecurePassword123!",
+    "expectedSuccessTitle": "Signed Up!",
+    "expectedSuccessMessage": "You successfully signed up!"
+  },
+  "passwordMismatchUser": {
+    "email": "mismatch@carrefour.com",
+    "password": "Password123!",
+    "confirmPassword": "DifferentPassword456!",
+    "expectedErrorMessage": "Please enter the same password"
+  }
+}
