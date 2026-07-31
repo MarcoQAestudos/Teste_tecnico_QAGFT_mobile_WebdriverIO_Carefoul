@@ -137,4 +137,4 @@ npm run report:open
 
 ## 👨‍💻 Autor
 
-Desenvolvido para o **QA Marco GFT - Desafio Técnico de QA Mobile - Banco Carrefour**.
+Desenvolvido pelo QA Marco GFT para o **Desafio Técnico de QA Mobile - Banco Carrefour**.
