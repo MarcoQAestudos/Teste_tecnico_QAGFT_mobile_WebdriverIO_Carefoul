@@ -7,6 +7,7 @@
   "scripts": {
     "prepare:android-app": "node scripts/ensure-android-app.js",
     "test:android": "npm run prepare:android-app && wdio run config/wdio.android.conf.js",
+    "test:android:ci": "npm run prepare:android-app && wdio run config/wdio.android.conf.js --spec test/specs/login.spec.js",
     "test:ios": "wdio run config/wdio.ios.conf.js",
     "test:browserstack": "wdio run config/wdio.browserstack.conf.js",
     "report:generate": "allure generate allure-results --clean -o allure-report",

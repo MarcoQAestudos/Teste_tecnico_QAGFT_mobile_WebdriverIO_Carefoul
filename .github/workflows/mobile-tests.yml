@@ -15,7 +15,7 @@ jobs:
   android-tests:
     name: Android Tests (Appium + WebDriverIO)
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
 
     env:
       CI: true
@@ -49,7 +49,7 @@ jobs:
           fi
           ls -lh apps/
 
-      - name: Executar testes Android no emulador
+      - name: Executar smoke tests Android no emulador
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -65,7 +65,7 @@ jobs:
             adb devices
             for i in $(seq 1 90); do boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r'); if [ "$boot" = "1" ]; then echo "Emulator booted."; break; fi; echo "Aguardando boot do emulador..."; sleep 5; done
             adb shell getprop sys.boot_completed
-            npm run test:android
+            npm run test:android:ci
 
       - name: Gerar relatório Allure
         if: always()
