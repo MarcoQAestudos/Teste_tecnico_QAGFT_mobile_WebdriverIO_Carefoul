@@ -34,6 +34,8 @@ exports.config = {
         'appium:appWaitActivity': 'com.wdiodemoapp.MainActivity',
         'appium:appWaitDuration': 60000,
         'appium:newCommandTimeout': 240,
-        'appium:autoGrantPermissions': true
+        'appium:autoGrantPermissions': true,
+        'appium:ignoreHiddenApiPolicyError': true,
+        'appium:adbExecTimeout': 60000
     }]
 };
