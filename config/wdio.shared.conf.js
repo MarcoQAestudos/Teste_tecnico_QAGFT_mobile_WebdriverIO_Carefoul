@@ -22,6 +22,7 @@ exports.config = {
     // ============
     //
     maxInstances: 1,
+    workers: 1,
     capabilities: [],
 
     //
