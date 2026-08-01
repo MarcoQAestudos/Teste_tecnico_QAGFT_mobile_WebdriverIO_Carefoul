@@ -63,7 +63,9 @@ jobs:
           api-level: 30
           target: default
           arch: x86_64
-          profile: Pixel_4
+          profile: pixel
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
           script: npm run test:android
 
       - name: 8. Gerar Allure Report (Android)
