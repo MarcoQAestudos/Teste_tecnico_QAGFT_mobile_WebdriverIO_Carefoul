@@ -66,11 +66,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            /usr/local/lib/android/sdk/platform-tools/adb wait-for-device
-            until /usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | grep -m 1 '1'; do
-              sleep 1
-            done
-            npm run test:android
+            bash -lc "until /usr/local/lib/android/sdk/platform-tools/adb devices | grep -q '^emulator-5554'; do sleep 1; done; until /usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | grep -m 1 '1'; do sleep 1; done; npm run test:android"
 
       - name: 9. Gerar Allure Report (Android)
         if: always()
