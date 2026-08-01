@@ -21,7 +21,6 @@ exports.config = {
         // Capabilities para Android (UiAutomator2) - native-demo-app
         platformName: 'Android',
         'appium:deviceName': 'Android Emulator',
-        'appium:platformVersion': '11',
         'appium:automationName': 'UiAutomator2',
         'appium:app': path.join(process.cwd(), './apps/android.wdio.native.app.v1.0.8.apk'),
         maxInstances: 1,
