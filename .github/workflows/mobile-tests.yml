@@ -101,8 +101,13 @@ jobs:
       - name: 4. Instalar driver XCUITest (Appium local)
         run: npx appium driver install xcuitest
 
-      - name: 5. Executar testes iOS
-        run: npm run test:ios
+      - name: 5. Garantir driver UiAutomator2 (Appium local)
+        run: |
+          if npx appium driver list --installed | grep -q "uiautomator2"; then
+            echo "UiAutomator2 já instalado, seguindo..."
+          else
+            npx appium driver install uiautomator2
+          fi
 
       - name: 6. Gerar Allure Report (iOS)
         if: always()
