@@ -40,11 +40,6 @@ jobs:
       - name: Instalar dependências do projeto
         run: npm ci
 
-      - name: Instalar driver Appium UiAutomator2
-        run: |
-          npx appium -v
-          npx appium driver install uiautomator2 --source=npm || npx appium driver install uiautomator2
-
       - name: Preparar APK Android
         run: |
           mkdir -p apps
@@ -83,7 +78,7 @@ jobs:
         if: always()
         run: |
           if [ -d allure-results ]; then
-            npx allure generate allure-results --clean -o allure-report
+            npx allure generate allure-results --clean -o allure-report || true
           fi
 
       - name: Upload de artefatos
@@ -96,5 +91,6 @@ jobs:
             allure-results/
             logs/
           retention-days: 14
+          if-no-files-found: ignore
 
 
