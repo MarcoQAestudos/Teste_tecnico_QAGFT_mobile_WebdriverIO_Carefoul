@@ -43,7 +43,11 @@ jobs:
 
       - name: 6. Instalar driver Appium UiAutomator2 se ausente
         run: |
-          npx appium driver list --installed | grep -q uiautomator2 || npx appium driver install uiautomator2
+          if ! npx appium driver list --installed | grep -q 'uiautomator2'; then
+            npx appium driver install uiautomator2
+          else
+            echo 'uiautomator2 já instalado'
+          fi
 
       - name: 7. Baixar APK
         run: |
