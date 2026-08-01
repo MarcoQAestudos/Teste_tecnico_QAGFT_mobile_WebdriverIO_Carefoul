@@ -43,7 +43,7 @@ jobs:
 
       - name: 6. Instalar driver Appium UiAutomator2 se ausente
         run: |
-          if npx appium driver list --installed | grep -q 'uiautomator2'; then
+          if npx appium driver list --installed 2>&1 | grep -q 'uiautomator2'; then
             echo 'uiautomator2 já instalado'
           else
             npx appium driver install uiautomator2
