@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "test:android": "wdio run config/wdio.android.conf.js",
+    "prepare:android-app": "node scripts/ensure-android-app.js",
+    "test:android": "npm run prepare:android-app && wdio run config/wdio.android.conf.js",
     "test:ios": "wdio run config/wdio.ios.conf.js",
     "test:browserstack": "wdio run config/wdio.browserstack.conf.js",
     "report:generate": "allure generate allure-results --clean -o allure-report",

@@ -3,25 +3,25 @@ const Page = require('./page');
 class FormsPage extends Page {
     // Campo de Entrada de Texto
     get textInput() {
-        return $('~text-input');
+        return $('//*[@content-desc="text-input" or @resource-id="com.wdiodemoapp:id/text-input" or @text="Type something"]');
     }
 
     get inputTextResult() {
-        return $('~input-text-result');
+        return $('//*[@content-desc="input-text-result" or @resource-id="com.wdiodemoapp:id/input-text-result"]');
     }
 
     // Switch Toggle
     get switchToggle() {
-        return $('~switch');
+        return $('//*[@content-desc="switch" or @resource-id="com.wdiodemoapp:id/switch"]');
     }
 
     get switchTextResult() {
-        return $('~switch-text');
+        return $('//*[@content-desc="switch-text" or @resource-id="com.wdiodemoapp:id/switch-text"]');
     }
 
     // Dropdown
     get dropdownSelect() {
-        return $('~Dropdown');
+        return $('//*[@content-desc="Dropdown" or @resource-id="com.wdiodemoapp:id/Dropdown" or @text="Dropdown"]');
     }
 
     get dropdownValue() {

@@ -4,6 +4,9 @@ const { config: sharedConfig } = require('./wdio.shared.conf');
 process.env.ANDROID_HOME = process.env.ANDROID_HOME || 'C:\\Users\\estdo\\AppData\\Local\\Android\\Sdk';
 process.env.ANDROID_SDK_ROOT = process.env.ANDROID_SDK_ROOT || process.env.ANDROID_HOME;
 
+const deviceName = process.env.ANDROID_DEVICE_NAME || 'Android Emulator';
+const udid = process.env.ANDROID_SERIAL || '';
+
 exports.config = {
     ...sharedConfig,
 
@@ -20,7 +23,8 @@ exports.config = {
     capabilities: [{
         // Capabilities para Android (UiAutomator2) - native-demo-app
         platformName: 'Android',
-        'appium:deviceName': 'Android Emulator',
+        'appium:deviceName': deviceName,
+        ...(udid ? { 'appium:udid': udid } : {}),
         'appium:automationName': 'UiAutomator2',
         'appium:app': path.join(process.cwd(), './apps/android.wdio.native.app.v1.0.8.apk'),
         maxInstances: 1,

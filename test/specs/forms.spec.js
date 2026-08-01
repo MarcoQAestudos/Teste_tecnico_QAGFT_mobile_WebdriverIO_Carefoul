@@ -5,10 +5,8 @@ const formData = require('../../data/formData.json');
 describe('Suíte de Testes: Componentes e Formulários (Forms)', () => {
 
     beforeEach(async () => {
-        const formsButton = await $('//android.widget.Button[@content-desc="Forms"] | //android.widget.Button[.//android.widget.TextView[@text="Forms"]] | //*[@content-desc="Forms" or @text="Forms"]');
-        await formsButton.waitForExist({ timeout: 60000 });
-        await formsButton.waitForDisplayed({ timeout: 60000 });
-        await formsButton.click();
+        await TabBar.openForms();
+        await FormsPage.textInput.waitForDisplayed({ timeout: 15000 });
     });
 
     it('Cenário 5: Deve preencher campo de texto e verificar espelhamento em tempo real', async () => {

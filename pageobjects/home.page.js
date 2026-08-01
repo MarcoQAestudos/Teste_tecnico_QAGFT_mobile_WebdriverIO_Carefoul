@@ -2,7 +2,7 @@ const Page = require('./page');
 
 class HomePage extends Page {
     get homeTitle() {
-        return $('~Home');
+        return $('//*[@content-desc="Home" or @resource-id="com.wdiodemoapp:id/Home" or @text="Home"]');
     }
 
     get demoAppDescription() {

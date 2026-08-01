@@ -3,38 +3,38 @@ const TabBar = require('./components/tabBar.component');
 
 class LoginPage extends Page {
     get loginScreen() {
-        return $('~Login-screen');
+        return $('//*[@content-desc="Login-screen" or @resource-id="com.wdiodemoapp:id/login-screen" or @text="Login"]');
     }
 
     // Aba de Seleção (Login / Sign Up)
     get loginTab() {
-        return $('~button-login-container');
+        return $('//*[@content-desc="button-login-container" or @resource-id="com.wdiodemoapp:id/button-login-container" or @text="Login"]');
     }
 
     get signUpTab() {
-        return $('~button-sign-up-container');
+        return $('//*[@content-desc="button-sign-up-container" or @resource-id="com.wdiodemoapp:id/button-sign-up-container" or @text="Sign up"]');
     }
 
     // Campos do Formulário
     get emailInput() {
-        return $('~input-email');
+        return $('//*[@content-desc="input-email" or @resource-id="com.wdiodemoapp:id/input-email" or @text="Email"]');
     }
 
     get passwordInput() {
-        return $('~input-password');
+        return $('//*[@content-desc="input-password" or @resource-id="com.wdiodemoapp:id/input-password" or @text="Password"]');
     }
 
     get confirmPasswordInput() {
-        return $('~input-repeat-password');
+        return $('//*[@content-desc="input-repeat-password" or @resource-id="com.wdiodemoapp:id/input-repeat-password" or @text="Repeat password"]');
     }
 
     // Botões de Submissão
     get loginButton() {
-        return $('~button-LOGIN');
+        return $('//*[@content-desc="button-LOGIN" or @resource-id="com.wdiodemoapp:id/button-LOGIN" or @text="LOGIN"]');
     }
 
     get signUpButton() {
-        return $('~button-SIGN UP');
+        return $('//*[@content-desc="button-SIGN UP" or @resource-id="com.wdiodemoapp:id/button-SIGN UP" or @text="SIGN UP"]');
     }
 
     // Elementos de Validação de Erro e Modais

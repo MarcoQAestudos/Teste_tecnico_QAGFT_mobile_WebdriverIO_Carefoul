@@ -3,12 +3,12 @@ const Page = require('./page');
 class SwipePage extends Page {
     get swipeScreenTitle() {
         return driver.isAndroid
-            ? $('//android.widget.TextView[contains(@text, "Swipe")] | //XCUIElementTypeStaticText[contains(@label, "Swipe")]')
+            ? $('//*[@content-desc="Swipe-screen" or @resource-id="com.wdiodemoapp:id/Swipe-screen" or .//android.widget.TextView[contains(@text, "Swipe")]]')
             : $('~Swipe-screen');
     }
 
     get carouselCard() {
-        return $('~card');
+        return $('//*[@content-desc="card" or @resource-id="com.wdiodemoapp:id/card"]');
     }
 
     get hiddenFoundText() {
