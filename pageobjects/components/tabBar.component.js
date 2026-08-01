@@ -2,27 +2,27 @@ const Page = require('../page');
 
 class TabBarComponent extends Page {
     get homeButton() {
-        return $('~Home');
+        return $('//*[@content-desc="Home" or @text="Home"]');
     }
 
     get webviewButton() {
-        return $('~Webview');
+        return $('//*[@content-desc="Webview" or @text="Web" or @text="Webview"]');
     }
 
     get loginButton() {
-        return $('~Login');
+        return $('//*[@content-desc="Login" or @text="Login"]');
     }
 
     get formsButton() {
-        return $('~Forms');
+        return $('//*[@content-desc="Forms" or @text="Forms"]');
     }
 
     get swipeButton() {
-        return $('~Swipe');
+        return $('//*[@content-desc="Swipe" or @text="Swipe"]');
     }
 
     get dragButton() {
-        return $('~Drag');
+        return $('//*[@content-desc="Drag" or @text="Drag"]');
     }
 
     async openHome() {

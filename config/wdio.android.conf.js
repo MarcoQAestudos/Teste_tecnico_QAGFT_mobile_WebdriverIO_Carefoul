@@ -24,8 +24,12 @@ exports.config = {
         'appium:platformVersion': '17',
         'appium:automationName': 'UiAutomator2',
         'appium:app': path.join(process.cwd(), './apps/android.wdio.native.app.v1.0.8.apk'),
+        maxInstances: 1,
         'appium:appPackage': 'com.wdiodemoapp',
         'appium:appActivity': 'com.wdiodemoapp.MainActivity',
+        'appium:appWaitPackage': 'com.wdiodemoapp',
+        'appium:appWaitActivity': 'com.wdiodemoapp.MainActivity',
+        'appium:appWaitDuration': 60000,
         'appium:newCommandTimeout': 240,
         'appium:autoGrantPermissions': true
     }]

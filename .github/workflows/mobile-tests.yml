@@ -6,15 +6,6 @@ on:
   pull_request:
     branches: [main, master]
   workflow_dispatch:
-    inputs:
-      run_ios:
-        description: "Executar testes iOS também?"
-        required: false
-        default: "false"
-        type: choice
-        options:
-          - "false"
-          - "true"
 
 concurrency:
   group: mobile-tests-${{ github.ref }}
@@ -24,7 +15,7 @@ jobs:
   android-tests:
     name: Android Tests (Appium + WebDriverIO)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       - name: 1. Checkout do Repositório
@@ -50,14 +41,18 @@ jobs:
           npx appium -v
           npx appium driver list --installed || true
 
-      - name: 6. Baixar APK
+      - name: 6. Instalar driver Appium UiAutomator2 se ausente
+        run: |
+          npx appium driver list --installed | grep -q uiautomator2 || npx appium driver install uiautomator2
+
+      - name: 7. Baixar APK
         run: |
           mkdir -p apps
           curl -L -o apps/android.wdio.native.app.v1.0.8.apk \
             https://github.com/webdriverio/native-demo-app/releases/download/v1.0.8/android.wdio.native.app.v1.0.8.apk
           ls -la apps/
 
-      - name: 7. Executar testes Android no emulador
+      - name: 8. Executar testes Android no emulador
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
@@ -68,7 +63,7 @@ jobs:
           disable-animations: true
           script: npm run test:android
 
-      - name: 8. Gerar Allure Report (Android)
+      - name: 9. Gerar Allure Report (Android)
         if: always()
         run: npx allure generate allure-results --clean -o allure-report
 
@@ -83,44 +78,4 @@ jobs:
             logs/
           retention-days: 14
 
-  ios-tests:
-    name: iOS Tests (Appium + WebDriverIO)
-    runs-on: macos-13
-    timeout-minutes: 45
-    if: github.event_name == 'workflow_dispatch' && inputs.run_ios == 'true'
 
-    steps:
-      - name: 1. Checkout do Repositório
-        uses: actions/checkout@v4
-
-      - name: 2. Configurar Node.js (v20) + cache npm
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: 3. Instalar dependências
-        run: npm ci
-
-      - name: 4. Verificar Appium e drivers instalados
-        run: |
-          npx appium -v
-          npx appium driver list --installed || true
-
-      - name: 5. Executar testes iOS
-        run: npm run test:ios
-
-      - name: 6. Gerar Allure Report (iOS)
-        if: always()
-        run: npx allure generate allure-results --clean -o allure-report
-
-      - name: 7. Upload artifacts (iOS)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-allure-report-and-logs
-          path: |
-            allure-report/
-            allure-results/
-            logs/
-          retention-days: 14

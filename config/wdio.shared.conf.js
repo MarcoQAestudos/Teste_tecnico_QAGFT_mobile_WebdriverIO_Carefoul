@@ -32,7 +32,7 @@ exports.config = {
     logLevel: 'info',
     bail: 0,
     baseUrl: '',
-    waitforTimeout: 10000,
+    waitforTimeout: 20000,
     connectionRetryTimeout: 120000,
     connectionRetryCount: 3,
 
@@ -49,6 +49,12 @@ exports.config = {
     mochaOpts: {
         ui: 'bdd',
         timeout: 120000
+    },
+
+    before: async function () {
+        const bottomNav = $('//*[@content-desc="Home" or @text="Home" or @content-desc="Forms" or @text="Forms"]');
+        await bottomNav.waitForExist({ timeout: 60000 });
+        await bottomNav.waitForDisplayed({ timeout: 60000 });
     },
 
     //

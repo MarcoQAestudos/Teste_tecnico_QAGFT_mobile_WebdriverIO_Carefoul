@@ -4,8 +4,8 @@
   "description": "Desafio Técnico de Automação de Testes Mobile para o Banco Carrefour utilizando JavaScript, WebDriverIO, Appium e Page Object Model com native-demo-app.",
   "main": "index.js",
   "type": "commonjs",
- "scripts": {
-    "test:android": "wdio run config/wdio.android.conf.js",
+  "scripts": {
+    "test:android": "set ANDROID_HOME=C:\\Users\\estdo\\AppData\\Local\\Android\\Sdk&& set ANDROID_SDK_ROOT=C:\\Users\\estdo\\AppData\\Local\\Android\\Sdk&& wdio run config/wdio.android.conf.js",
     "test:ios": "wdio run config/wdio.ios.conf.js",
     "test:browserstack": "wdio run config/wdio.browserstack.conf.js",
     "report:generate": "allure generate allure-results --clean -o allure-report",
@@ -39,3 +39,4 @@
     "typescript": "^5.4.5"
   }
 }
+

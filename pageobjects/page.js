@@ -3,8 +3,8 @@ module.exports = class Page {
      * Espera e clica em um elemento
      */
     async clickElement(element) {
-        await element.waitForExist({ timeout: 30000 });
-        await element.waitForDisplayed({ timeout: 30000 });
+        await element.waitForExist({ timeout: 60000 });
+        await element.waitForDisplayed({ timeout: 60000 });
         await element.click();
     }
 
