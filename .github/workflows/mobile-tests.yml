@@ -63,14 +63,7 @@ jobs:
             export PATH=$ANDROID_HOME/platform-tools:$PATH
             adb wait-for-device
             adb devices
-            for i in $(seq 1 90); do
-              boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
-              if [ "$boot" = "1" ]; then
-                break
-              fi
-              echo "Aguardando boot do emulador..."
-              sleep 5
-            done
+            for i in $(seq 1 90); do boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r'); if [ "$boot" = "1" ]; then echo "Emulator booted."; break; fi; echo "Aguardando boot do emulador..."; sleep 5; done
             adb shell getprop sys.boot_completed
             npm run test:android
 
