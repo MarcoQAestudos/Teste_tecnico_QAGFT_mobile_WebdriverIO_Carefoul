@@ -1,4 +1,4 @@
-name: Mobile Tests (Android) - Final Stable
+name: Mobile Tests (Android) - Final Stable (POSIX)
 
 on:
   push:
@@ -41,29 +41,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Debug environment (before emulator)
+      - name: Debug environment
         run: |
           set -eu
           echo "Node: $(node -v)"
           echo "NPM: $(npm -v)"
           npx wdio --version || true
           npx appium --version || true
-          echo "Project files:"
           ls -la
-          echo "Config files:"
           ls -la config || true
-          echo "Spec files:"
           ls -la test/specs || true
-          echo "Package scripts:"
-          npm run
 
       - name: Prepare APK
         run: |
           set -eu
           mkdir -p apps
           if [ ! -f apps/android.wdio.native.app.v1.0.8.apk ]; then
-            curl -L --fail --retry 3 \
-              -o apps/android.wdio.native.app.v1.0.8.apk \
+            curl -L --fail --retry 3 -o apps/android.wdio.native.app.v1.0.8.apk \
               https://github.com/webdriverio/native-demo-app/releases/download/v1.0.8/android.wdio.native.app.v1.0.8.apk
           fi
           test -f apps/android.wdio.native.app.v1.0.8.apk
@@ -87,12 +81,14 @@ jobs:
             adb start-server
             adb wait-for-device || true
 
-            for i in $(seq 1 90); do
+            i=1
+            while [ "$i" -le 90 ]; do
               STATE="$(adb get-state 2>/dev/null || true)"
               echo "ADB state: ${STATE:-unknown}"
               if [ "$STATE" = "device" ]; then
                 break
               fi
+              i=$((i + 1))
               sleep 2
             done
 
@@ -108,20 +104,25 @@ jobs:
             curl -s http://127.0.0.1:4723/wd/hub/status || true
 
             echo "=== Run tests ==="
-            npm run test:android:ci 2>&1 | tee test-output.log
+            npm run test:android:ci > test-output.log 2>&1 || TEST_EXIT=$?
+            TEST_EXIT="${TEST_EXIT:-0}"
 
             echo "=== Stop Appium ==="
-            kill $APPIUM_PID || true
+            kill "$APPIUM_PID" || true
+
+            echo "=== Test output (tail) ==="
+            tail -n 200 test-output.log || true
+
+            exit "$TEST_EXIT"
 
       - name: Generate Allure report
         if: always()
         run: |
-          set +e
           if [ -d allure-results ]; then
-            npx allure generate allure-results --clean -o allure-report
+            npx allure generate allure-results --clean -o allure-report || true
           fi
 
-      - name: Upload artifacts (always)
+      - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
