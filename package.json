@@ -6,12 +6,12 @@
   "type": "commonjs",
   "scripts": {
     "prepare:android-app": "node scripts/ensure-android-app.js",
-    "test:android": "npm run prepare:android-app && wdio run config/wdio.android.conf.js",
-    "test:android:ci": "npm run prepare:android-app && wdio run config/wdio.android.conf.js --spec test/specs/login.spec.js",
-    "test:ios": "wdio run config/wdio.ios.conf.js",
-    "test:browserstack": "wdio run config/wdio.browserstack.conf.js",
-    "report:generate": "allure generate allure-results --clean -o allure-report",
-    "report:open": "allure open allure-report"
+    "test:android": "npm run prepare:android-app && npx wdio run config/wdio.android.conf.js",
+    "test:android:ci": "npm run prepare:android-app && npx wdio run config/wdio.android.conf.js --spec ./test/specs/login.spec.js",
+    "test:ios": "npx wdio run config/wdio.ios.conf.js",
+    "test:browserstack": "npx wdio run config/wdio.browserstack.conf.js",
+    "report:generate": "npx allure generate allure-results --clean -o allure-report",
+    "report:open": "npx allure open allure-report"
   },
   "keywords": [
     "webdriverio",
