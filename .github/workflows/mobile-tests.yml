@@ -1,4 +1,4 @@
-name: Mobile Tests (Android) - Simple CI
+name: Mobile Tests (Android) - Stable CI
 
 on:
   push:
@@ -10,13 +10,17 @@ on:
 jobs:
   android-tests:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
+
+    env:
+      CI: true
+      ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 120
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -28,7 +32,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
       - name: Download APK
@@ -37,30 +41,55 @@ jobs:
           curl -L --fail --retry 3 \
             -o apps/android.wdio.native.app.v1.0.8.apk \
             https://github.com/webdriverio/native-demo-app/releases/download/v1.0.8/android.wdio.native.app.v1.0.8.apk
-          ls -lh apps
+          ls -lah apps
 
-      - name: Run Android tests on emulator
+      - name: Run tests on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
           arch: x86_64
           profile: pixel
           disable-animations: true
-          script: npm run test:android:ci
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          script: |
+            set -euxo pipefail
+            adb wait-for-device
+            adb devices
+            adb shell getprop sys.boot_completed
+
+            # Appium explícito para evitar falhas silenciosas
+            npx appium --log ./appium.log --base-path /wd/hub &
+            APPIUM_PID=$!
+
+            # Espera Appium subir
+            for i in {1..30}; do
+              if curl -s http://127.0.0.1:4723/wd/hub/status >/dev/null; then
+                echo "Appium OK"
+                break
+              fi
+              sleep 1
+            done
+
+            npm run test:android:ci 2>&1 | tee test-output.log
+
+            # encerra appium
+            kill $APPIUM_PID || true
 
       - name: Generate Allure report
         if: always()
         run: |
           if [ -d allure-results ]; then
-            npx allure generate allure-results --clean -o allure-report
+            npx allure generate allure-results --clean -o allure-report || true
           fi
 
       - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: android-test-artifacts
+          name: android-debug-artifacts
           path: |
+            appium.log
+            test-output.log
             allure-results/
             allure-report/
             logs/
