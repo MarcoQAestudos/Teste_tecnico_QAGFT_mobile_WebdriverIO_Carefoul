@@ -64,13 +64,13 @@ jobs:
             export PATH=$ANDROID_HOME/platform-tools:$PATH
             adb wait-for-device
             adb devices
-            echo "Aguardando boot completo do emulador (até 180 segundos)..."
-            for i in $(seq 1 180); do 
-              boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r') 
-              if [ "$boot" = "1" ]; then 
-                echo "✓ Emulador iniciado com sucesso!" 
+            echo "Aguardando boot completo do emulador..."
+            for i in {1..180}; do
+              boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+              if [ "$boot" = "1" ]; then
+                echo "✓ Emulador iniciado com sucesso!"
                 break
-              fi 
+              fi
               echo "Tentativa $i: Aguardando emulador..."
               sleep 1
             done
