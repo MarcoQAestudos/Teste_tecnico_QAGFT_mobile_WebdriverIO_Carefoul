@@ -15,11 +15,12 @@ jobs:
   android-tests:
     name: Android Tests (Appium + WebDriverIO)
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     env:
       CI: true
       NODE_OPTIONS: --max_old_space_size=4096
+      ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 120
 
     steps:
       - name: Checkout do repositório
@@ -57,14 +58,25 @@ jobs:
           arch: x86_64
           profile: pixel_6
           emulator-options: >-
-            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 4096
+            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 8192 -netfast
           disable-animations: true
           script: |
             export PATH=$ANDROID_HOME/platform-tools:$PATH
             adb wait-for-device
             adb devices
-            for i in $(seq 1 90); do boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r'); if [ "$boot" = "1" ]; then echo "Emulator booted."; break; fi; echo "Aguardando boot do emulador..."; sleep 5; done
+            echo "Aguardando boot completo do emulador (até 180 segundos)..."
+            for i in $(seq 1 180); do 
+              boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r') 
+              if [ "$boot" = "1" ]; then 
+                echo "✓ Emulador iniciado com sucesso!" 
+                break
+              fi 
+              echo "Tentativa $i: Aguardando emulador..."
+              sleep 1
+            done
             adb shell getprop sys.boot_completed
+            echo "Aguardando 10 segundos extras para garantir estabilidade..."
+            sleep 10
             npm run test:android:ci
 
       - name: Gerar relatório Allure
@@ -85,5 +97,3 @@ jobs:
             logs/
           retention-days: 14
           if-no-files-found: ignore
-
-
