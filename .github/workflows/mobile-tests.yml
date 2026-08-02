@@ -65,12 +65,14 @@ jobs:
             adb wait-for-device
             adb devices
             echo "Aguardando boot completo do emulador..."
-            for i in {1..180}; do
+            i=0
+            while [ $i -lt 180 ]; do
               boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
               if [ "$boot" = "1" ]; then
                 echo "✓ Emulador iniciado com sucesso!"
                 break
               fi
+              i=$((i + 1))
               echo "Tentativa $i: Aguardando emulador..."
               sleep 1
             done
