@@ -52,6 +52,9 @@ jobs:
           fi
           ls -lah apps/
 
+      - name: Tornar script executavel
+        run: chmod +x scripts/run-tests.sh
+
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -62,20 +65,7 @@ jobs:
           disable-animations: true
           emulator-boot-timeout: 900
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 4096
-          script: |
-            echo "Aguardando boot completo..."
-            adb wait-for-device
-            boot=""
-            count=0
-            until [ "$boot" = "1" ] || [ "$count" -ge 60 ]; do
-              boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)
-              echo "boot_completed=$boot (tentativa $count)"
-              count=$((count+1))
-              sleep 5
-            done
-            if [ "$boot" != "1" ]; then echo "ERRO: boot nao completou"; exit 1; fi
-            echo "Emulador pronto. Iniciando testes..."
-            npm run test:android:ci
+          script: bash scripts/run-tests.sh
 
       - name: Generate Allure report
         if: always()
