@@ -15,12 +15,12 @@ jobs:
   android-tests:
     name: Android Tests (Appium + WebDriverIO)
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 60
 
     env:
       CI: true
       NODE_OPTIONS: --max_old_space_size=4096
-      ANDROID_EMULATOR_WAIT_TIME_BEFORE_KILL: 120
+      ANDROID_DEVICE_NAME: emulator-5554
 
     steps:
       - name: Checkout
@@ -41,27 +41,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Debug environment
-        run: |
-          set -eu
-          echo "Node: $(node -v)"
-          echo "NPM: $(npm -v)"
-          npx wdio --version || true
-          npx appium --version || true
-          ls -la
-          ls -la config || true
-          ls -la test/specs || true
+      - name: Install Appium UiAutomator2 driver
+        run: npx appium driver install uiautomator2
 
       - name: Prepare APK
         run: |
-          set -eu
           mkdir -p apps
           if [ ! -f apps/android.wdio.native.app.v1.0.8.apk ]; then
-            curl -L --fail --retry 3 -o apps/android.wdio.native.app.v1.0.8.apk \
+            curl -L --fail --retry 3 \
+              -o apps/android.wdio.native.app.v1.0.8.apk \
               https://github.com/webdriverio/native-demo-app/releases/download/v1.0.8/android.wdio.native.app.v1.0.8.apk
           fi
-          test -f apps/android.wdio.native.app.v1.0.8.apk
-          ls -lah apps
+          ls -lah apps/
 
       - name: Run Android tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
@@ -73,47 +64,7 @@ jobs:
           disable-animations: true
           emulator-boot-timeout: 900
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 4096
-          script: |
-            set -eu
-
-            echo "=== ADB recovery ==="
-            adb kill-server || true
-            adb start-server
-            adb wait-for-device || true
-
-            i=1
-            while [ "$i" -le 90 ]; do
-              STATE="$(adb get-state 2>/dev/null || true)"
-              echo "ADB state: ${STATE:-unknown}"
-              if [ "$STATE" = "device" ]; then
-                break
-              fi
-              i=$((i + 1))
-              sleep 2
-            done
-
-            adb devices || true
-            adb shell getprop ro.build.version.release || true
-            adb shell getprop ro.build.version.sdk || true
-            adb shell getprop sys.boot_completed || true
-
-            echo "=== Appium ==="
-            npx appium --log appium.log --base-path /wd/hub > appium-stdout.log 2>&1 &
-            APPIUM_PID=$!
-            sleep 8
-            curl -s http://127.0.0.1:4723/wd/hub/status || true
-
-            echo "=== Run tests ==="
-            npm run test:android:ci > test-output.log 2>&1 || TEST_EXIT=$?
-            TEST_EXIT="${TEST_EXIT:-0}"
-
-            echo "=== Stop Appium ==="
-            kill "$APPIUM_PID" || true
-
-            echo "=== Test output (tail) ==="
-            tail -n 200 test-output.log || true
-
-            exit "$TEST_EXIT"
+          script: npm run test:android:ci
 
       - name: Generate Allure report
         if: always()
@@ -128,9 +79,6 @@ jobs:
         with:
           name: android-artifacts
           path: |
-            test-output.log
-            appium.log
-            appium-stdout.log
             allure-results/
             allure-report/
             logs/
