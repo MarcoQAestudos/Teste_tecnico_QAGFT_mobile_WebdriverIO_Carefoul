@@ -21,6 +21,7 @@ jobs:
       CI: true
       NODE_OPTIONS: --max_old_space_size=4096
       ANDROID_DEVICE_NAME: emulator-5554
+      ANDROID_SERIAL: emulator-5554
 
     steps:
       - name: Checkout
@@ -61,7 +62,20 @@ jobs:
           disable-animations: true
           emulator-boot-timeout: 900
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -memory 4096
-          script: npm run test:android:ci
+          script: |
+            echo "Aguardando boot completo..."
+            adb wait-for-device
+            boot=""
+            count=0
+            until [ "$boot" = "1" ] || [ "$count" -ge 60 ]; do
+              boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r' || true)
+              echo "boot_completed=$boot (tentativa $count)"
+              count=$((count+1))
+              sleep 5
+            done
+            if [ "$boot" != "1" ]; then echo "ERRO: boot nao completou"; exit 1; fi
+            echo "Emulador pronto. Iniciando testes..."
+            npm run test:android:ci
 
       - name: Generate Allure report
         if: always()
